@@ -48,15 +48,13 @@ girl_get_sema = threading.Semaphore(0)
 
 def father():
     while True:
-        bucket_sema.acquire()
-
         bucket_lock.acquire()
         count_lock.acquire()
 
         if count["父亲"] < 3:
             if wait:
                 time.sleep(1)
-
+            bucket_sema.acquire()
             bucket["香蕉"] += 1
             count["父亲"] += 1
             count["母亲"] = 0
@@ -73,7 +71,6 @@ def father():
 
 def mother():
     while True:
-        bucket_sema.acquire()
 
         bucket_lock.acquire()
         count_lock.acquire()
@@ -81,7 +78,7 @@ def mother():
         if count["母亲"] < 3:
             if wait:
                 time.sleep(1)
-
+            bucket_sema.acquire()
             bucket["草莓"] += 1
             count["母亲"] += 1
             count["父亲"] = 0
@@ -97,14 +94,13 @@ def mother():
 
 def boy():
     while True:
-        boy_get_sema.acquire()
 
         bucket_lock.acquire()
         count_lock.acquire()
         if count["儿子"] <= 1:
             if wait:
                 time.sleep(1)
-
+            boy_get_sema.acquire()
             bucket["香蕉"] -= 1
             count["儿子"] += 1
             count["女儿"] = 0
@@ -121,7 +117,6 @@ def boy():
 
 def girl():
     while True:
-        girl_get_sema.acquire()
 
         bucket_lock.acquire()
         count_lock.acquire()
@@ -129,7 +124,7 @@ def girl():
         if count["女儿"] <= 1:
             if wait:
                 time.sleep(1)
-
+            girl_get_sema.acquire()
             bucket["草莓"] -= 1
             count["女儿"] += 1
             count["儿子"] = 0
